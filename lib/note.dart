@@ -16,10 +16,8 @@ class Note {
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
     "title": title,
     "content": content,
-    "timestamp": timestamp,
   };
 
   @override

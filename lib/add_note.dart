@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'db_helper.dart';
+import 'note.dart';
+
 class AddNote extends StatefulWidget {
   @override
   _AddNoteState createState() => _AddNoteState();
 }
 
 class _AddNoteState extends State<AddNote> {
+
+  TextEditingController textEditingController = TextEditingController();
 
   var now = "";
   @override
@@ -31,24 +36,42 @@ class _AddNoteState extends State<AddNote> {
               alignment: Alignment.topLeft,
               child: Text(now, style: TextStyle(color: Colors.grey, fontSize: 12.0),),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                decoration: new InputDecoration.collapsed(
-                  hintText: 'Speak your mind',
+            Container(
+              height: 200,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  controller: textEditingController,
+                  decoration: new InputDecoration.collapsed(
+                    hintText: 'Speak your mind',
+                  ),
+
                 ),
               ),
             ),
           ],
         ),
       ),
+      persistentFooterButtons: <Widget>[
+        IconButton(icon: Icon(Icons.check), onPressed: __addNote,)
+      ],
     );
   }
-}
 
-//TextField(
-//maxLines: null,
-//keyboardType: TextInputType.multiline,
-//),
+  __addNote() async {
+    Note note = Note(
+      title: "title",
+      content: textEditingController.text
+    );
+
+    print("CONTENT: ${textEditingController.text}");
+
+    final res = await DBHelper.db.addNote(note);
+    if (int.parse("$res") > 0) {
+      Navigator.pop(context);
+    }
+  }
+
+}
